@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * Created by huynq on 5/12/17.
  */
+@SuppressWarnings("deprecation")
 public class AudioUtils {
 
     /**
