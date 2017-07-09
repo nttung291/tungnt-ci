@@ -18,6 +18,8 @@ public class GameWindow extends JFrame{
     BufferedImage backGround;
     BufferedImage Player;
     private int playerX;
+    private int playerY;
+    private int backgroundY;
 
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphic2D;
@@ -25,14 +27,20 @@ public class GameWindow extends JFrame{
     public GameWindow() {
         setupWindow();
         loadImgage();
-        playerX = (backGround.getWidth()-Player.getWidth())/2;
+        setupPlayer();
+        backgroundY = this.getHeight()-backGround.getHeight();
         backBufferImage = new BufferedImage(this.getWidth(),this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         backBufferGraphic2D = (Graphics2D) backBufferImage.getGraphics();
-        setupImput();
+        setupInput();
         this.setVisible(true);
     }
 
-    private void setupImput() {
+    private void setupPlayer() {
+        playerX = (backGround.getWidth()-Player.getWidth())/2;
+        playerY = this.getHeight()-Player.getHeight();
+    }
+
+    private void setupInput() {
         this.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -43,8 +51,25 @@ public class GameWindow extends JFrame{
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_RIGHT:
-                        playerX+=5;
+                        if (playerX < backGround.getWidth()-Player.getWidth()){
+                            playerX+=5;
+                        }
                         repaint();
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        if (playerX>0){
+                            playerX-=5;
+                        }
+                        break;
+                    case KeyEvent.VK_UP:
+                        if(playerY > Player.getHeight()){
+                            playerY-=5;
+                        }
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        if(playerY < 800-Player.getHeight()){
+                            playerY+=5;
+                        }
                         break;
                     default:
                         break;
@@ -64,8 +89,9 @@ public class GameWindow extends JFrame{
                 Thread.sleep(17);
                 backBufferGraphic2D.setColor(Color.black);
                 backBufferGraphic2D.fillRect(0,0,this.getWidth(),this.getHeight());
-                backBufferGraphic2D.drawImage(backGround,0,this.getHeight()-backGround.getHeight(),null);
-                backBufferGraphic2D.drawImage(Player,playerX,this.getHeight()-Player.getHeight(),null);
+                backBufferGraphic2D.drawImage(backGround,0,backgroundY,null);
+                backBufferGraphic2D.drawImage(Player,playerX,playerY,null);
+                changeBackGround();
                 Graphics2D g2d = (Graphics2D) this.getGraphics();
                 g2d.drawImage(backBufferImage,0,0,null);
             } catch (InterruptedException e) {
@@ -84,7 +110,7 @@ public class GameWindow extends JFrame{
     }
 
     private void setupWindow() {
-        this.setSize(800,800);
+        this.setSize(600,800);
         this.setResizable(false);
         this.setTitle("Touhou - Remade by tungNT");
         this.addWindowListener(new WindowAdapter() {
@@ -96,7 +122,14 @@ public class GameWindow extends JFrame{
         });
     }
 
-        @Override
+    private void changeBackGround(){
+        while(backgroundY < 0){
+            backgroundY += 2;
+            break;
+        }
+    }
+
+    @Override
     public void paint(Graphics g) {
 
     }
