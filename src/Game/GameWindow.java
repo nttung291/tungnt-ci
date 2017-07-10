@@ -17,12 +17,7 @@ public class GameWindow extends JFrame{
 
     BufferedImage backGround;
     BufferedImage Player;
-
     private int playerX;
-    private int playerY;
-    private int backgroundY;
-
-    private boolean checkUp,checkDown,checkRight,checkLeft;
 
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphic2D;
@@ -30,22 +25,15 @@ public class GameWindow extends JFrame{
     public GameWindow() {
         setupWindow();
         loadImgage();
-        setupPlayer();
-        backgroundY = this.getHeight()-backGround.getHeight();
+        playerX = (backGround.getWidth()-Player.getWidth())/2;
         backBufferImage = new BufferedImage(this.getWidth(),this.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         backBufferGraphic2D = (Graphics2D) backBufferImage.getGraphics();
-        setupInput();
+        setupImput();
         this.setVisible(true);
     }
 
-    private void setupPlayer() {
-        playerX = (backGround.getWidth()-Player.getWidth())/2;
-        playerY = this.getHeight()-Player.getHeight();
-    }
-
-    private void setupInput() {
+    private void setupImput() {
         this.addKeyListener(new KeyListener() {
-
             @Override
             public void keyTyped(KeyEvent e) {
 
@@ -55,16 +43,15 @@ public class GameWindow extends JFrame{
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_RIGHT:
-                        checkRight = true;
+                        if (playerX < backGround.getWidth()-Player.getWidth()){
+                            playerX+=5;
+                        }
+                        repaint();
                         break;
                     case KeyEvent.VK_LEFT:
-                        checkLeft = true;
-                        break;
-                    case KeyEvent.VK_UP:
-                        checkUp = true;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        checkDown = true;
+                        if (playerX>0){
+                            playerX-=5;
+                        }
                         break;
                     default:
                         break;
@@ -73,37 +60,9 @@ public class GameWindow extends JFrame{
 
             @Override
             public void keyReleased(KeyEvent e) {
-                switch(e.getKeyCode()){
-                    case KeyEvent.VK_RIGHT:
-                        checkRight = false;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        checkLeft = false;
-                        break;
-                    case KeyEvent.VK_UP:
-                        checkUp = false;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        checkDown = false;
-                        break;
-                }
+
             }
         });
-    }
-
-    private void Move(){
-        if (checkRight == true && playerX < backGround.getWidth()-Player.getWidth()){
-            playerX+=5;
-        }
-        else if (checkLeft == true && playerX>0){
-            playerX-=5;
-        }
-        if(checkUp == true && playerY > Player.getHeight()){
-            playerY-=5;
-        }
-        else if(checkDown == true && playerY < 800-Player.getHeight()){
-            playerY+=5;
-        }
     }
 
     public void Run(){
@@ -112,10 +71,8 @@ public class GameWindow extends JFrame{
                 Thread.sleep(17);
                 backBufferGraphic2D.setColor(Color.black);
                 backBufferGraphic2D.fillRect(0,0,this.getWidth(),this.getHeight());
-                backBufferGraphic2D.drawImage(backGround,0,backgroundY,null);
-                backBufferGraphic2D.drawImage(Player,playerX,playerY,null);
-                changeBackGround();
-                Move();
+                backBufferGraphic2D.drawImage(backGround,0,this.getHeight()-backGround.getHeight(),null);
+                backBufferGraphic2D.drawImage(Player,playerX,this.getHeight()-Player.getHeight(),null);
                 Graphics2D g2d = (Graphics2D) this.getGraphics();
                 g2d.drawImage(backBufferImage,0,0,null);
             } catch (InterruptedException e) {
@@ -144,13 +101,6 @@ public class GameWindow extends JFrame{
                 super.windowClosing(e);
             }
         });
-    }
-
-    private void changeBackGround(){
-        while(backgroundY < 0){
-            backgroundY += 2;
-            break;
-        }
     }
 
     @Override
