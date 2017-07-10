@@ -17,9 +17,11 @@ public class GameWindow extends JFrame{
 
     BufferedImage backGround;
     BufferedImage Player;
+
     private int playerX;
     private int playerY;
     private int backgroundY;
+    
     private boolean checkUp,checkDown,checkRight,checkLeft;
 
     BufferedImage backBufferImage;
