@@ -20,6 +20,7 @@ public class GameWindow extends JFrame{
     private int playerX;
     private int playerY;
     private int backgroundY;
+    private boolean checkUp,checkDown,checkRight,checkLeft;
 
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphic2D;
@@ -42,6 +43,7 @@ public class GameWindow extends JFrame{
 
     private void setupInput() {
         this.addKeyListener(new KeyListener() {
+
             @Override
             public void keyTyped(KeyEvent e) {
 
@@ -51,25 +53,16 @@ public class GameWindow extends JFrame{
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_RIGHT:
-                        if (playerX < backGround.getWidth()-Player.getWidth()){
-                            playerX+=5;
-                        }
-                        repaint();
+                        checkRight = true;
                         break;
                     case KeyEvent.VK_LEFT:
-                        if (playerX>0){
-                            playerX-=5;
-                        }
+                        checkLeft = true;
                         break;
                     case KeyEvent.VK_UP:
-                        if(playerY > Player.getHeight()){
-                            playerY-=5;
-                        }
+                        checkUp = true;
                         break;
                     case KeyEvent.VK_DOWN:
-                        if(playerY < 800-Player.getHeight()){
-                            playerY+=5;
-                        }
+                        checkDown = true;
                         break;
                     default:
                         break;
@@ -78,9 +71,37 @@ public class GameWindow extends JFrame{
 
             @Override
             public void keyReleased(KeyEvent e) {
-
+                switch(e.getKeyCode()){
+                    case KeyEvent.VK_RIGHT:
+                        checkRight = false;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        checkLeft = false;
+                        break;
+                    case KeyEvent.VK_UP:
+                        checkUp = false;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        checkDown = false;
+                        break;
+                }
             }
         });
+    }
+
+    private void Move(){
+        if (checkRight == true && playerX < backGround.getWidth()-Player.getWidth()){
+            playerX+=5;
+        }
+        else if (checkLeft == true && playerX>0){
+            playerX-=5;
+        }
+        if(checkUp == true && playerY > Player.getHeight()){
+            playerY-=5;
+        }
+        else if(checkDown == true && playerY < 800-Player.getHeight()){
+            playerY+=5;
+        }
     }
 
     public void Run(){
@@ -92,6 +113,7 @@ public class GameWindow extends JFrame{
                 backBufferGraphic2D.drawImage(backGround,0,backgroundY,null);
                 backBufferGraphic2D.drawImage(Player,playerX,playerY,null);
                 changeBackGround();
+                Move();
                 Graphics2D g2d = (Graphics2D) this.getGraphics();
                 g2d.drawImage(backBufferImage,0,0,null);
             } catch (InterruptedException e) {
