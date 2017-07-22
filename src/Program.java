@@ -1,6 +1,4 @@
-import Game.GameWindow;
-
-import java.util.*;
+import game.GameWindow;
 
 /**
  * Created by huynq on 7/4/17.
@@ -8,6 +6,7 @@ import java.util.*;
 public class Program {
     public static void main(String[] args) {
         GameWindow gameWindow = new GameWindow();
-        gameWindow.Run();
+        gameWindow.loop();
     }
 }
+
